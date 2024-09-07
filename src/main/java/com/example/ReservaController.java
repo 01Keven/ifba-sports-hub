@@ -1,17 +1,11 @@
 package com.example;
 
 import java.awt.event.ActionEvent;
-<<<<<<< HEAD
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-=======
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
->>>>>>> 925dddbde14fd829b71c7eb8a90022659437ef44
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -75,7 +69,6 @@ public class ReservaController {
         panel.add(voltarButton);
 
         reservarButton.addActionListener((ActionEvent e) -> {
-<<<<<<< HEAD
             try {
                 String evento = eventoText.getText();
                 LocalDateTime dataHoraInicio = LocalDateTime.parse(dateTimeText.getText(), dateTimeFormatter);
@@ -84,21 +77,6 @@ public class ReservaController {
                                             .plusMinutes(Long.parseLong(duracaoTexto.split(":")[1]));
                 Reserva reserva = new Reserva(evento, dataHoraInicio, duracao, usuario);
                 reservaService.adicionarReserva(reserva);
-=======
-            String evento = eventoText.getText();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            Date data;
-            try {
-                data = sdf.parse(dateText.getText());
-            } catch (ParseException ex) {
-                JOptionPane.showMessageDialog(panel, "Data inválida. Use o formato dd/MM/yyyy.");
-                return;
-            }
-
-            boolean sucesso = reservaService.reservarHorario(evento, data, usuario);
-            
-            if (sucesso) {
->>>>>>> 925dddbde14fd829b71c7eb8a90022659437ef44
                 JOptionPane.showMessageDialog(panel, "Reserva realizada com sucesso!");
                 frame.dispose(); // Fechar a tela de reserva
                 new CalendarioController(reservaService).criarInterface(); // Abrir a tela de calendário
