@@ -3,14 +3,14 @@ package com.example;
 public class Usuario {
     private final String nome;
     private final String senha;
-    private final String tipo; // Pode ser "aluno", "administrador", "coordenador"
+    private final String tipo;
     private final String email;
 
     public Usuario(String nome, String senha, String tipo) {
         this.nome = nome;
         this.senha = senha;
         this.tipo = tipo;
-        this.email = nome + "@ifba.edu.br"; // Exemplo de geração de e-mail
+        this.email = nome + "@exemplo.com"; // Simulação de e-mail
     }
 
     public String getNome() {

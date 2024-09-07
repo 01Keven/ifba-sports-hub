@@ -1,7 +1,5 @@
 package com.example;
 
-
-
 public class NotificacaoService {
 
     public void enviarConfirmacao(Usuario usuario, String mensagem) {

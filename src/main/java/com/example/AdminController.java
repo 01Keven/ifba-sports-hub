@@ -1,7 +1,6 @@
 package com.example;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -28,7 +27,7 @@ public class AdminController {
         panel.add(gerarRelatorioButton);
 
         gerarRelatorioButton.addActionListener((ActionEvent e) -> {
-            ReservaService reservaService = new ReservaService(); // Deve ser passado o mesmo objeto usado na aplicação
+            ReservaService reservaService = new ReservaService(); // Deveria ser o mesmo objeto da aplicação
             String relatorio = reservaService.gerarRelatorioDeUso();
             JOptionPane.showMessageDialog(panel, relatorio);
         });
@@ -43,5 +42,3 @@ public class AdminController {
         });
     }
 }
-
-
