@@ -8,14 +8,21 @@ import javax.swing.JPanel;
 
 public class AdminController {
     private JFrame frame;
+    private JFrame previousFrame;
+
+    public AdminController(JFrame previousFrame) {
+        this.previousFrame = previousFrame;
+    }
 
     public void criarInterface() {
         frame = new JFrame("Administração");
-        frame.setSize(300, 200);
+        frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
         JPanel panel = new JPanel();
         frame.add(panel);
         placeComponents(panel);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
@@ -27,7 +34,7 @@ public class AdminController {
         panel.add(gerarRelatorioButton);
 
         gerarRelatorioButton.addActionListener((ActionEvent e) -> {
-            ReservaService reservaService = new ReservaService(); // Deveria ser o mesmo objeto da aplicação
+            ReservaService reservaService = new ReservaService();
             String relatorio = reservaService.gerarRelatorioDeUso();
             JOptionPane.showMessageDialog(panel, relatorio);
         });
@@ -38,7 +45,16 @@ public class AdminController {
 
         logoutButton.addActionListener((ActionEvent e) -> {
             frame.dispose();
-            new LoginController(new UsuarioService()).criarInterface(); // Retorna para a tela de login
+            new LoginController(new UsuarioService()).criarInterface();
+        });
+
+        JButton voltarButton = new JButton("Voltar");
+        voltarButton.setBounds(10, 100, 150, 25);
+        panel.add(voltarButton);
+
+        voltarButton.addActionListener((ActionEvent e) -> {
+            frame.dispose();
+            previousFrame.setVisible(true);
         });
     }
 }

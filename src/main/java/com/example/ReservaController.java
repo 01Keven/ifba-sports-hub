@@ -1,11 +1,13 @@
 package com.example;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,27 +18,32 @@ import javax.swing.JTextField;
 public class ReservaController {
     private final ReservaService reservaService;
     private final Usuario usuario;
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    private JFrame previousFrame;
 
-    public ReservaController(ReservaService reservaService, Usuario usuario) {
+    public ReservaController(ReservaService reservaService, Usuario usuario, JFrame previousFrame) {
         this.reservaService = reservaService;
         this.usuario = usuario;
+        this.previousFrame = previousFrame;
     }
 
     public void criarInterface() {
         JFrame frame = new JFrame("Reserva de Horário");
-        frame.setSize(400, 250);
+        frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
         JPanel panel = new JPanel();
         frame.add(panel);
         placeComponents(panel, frame);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
     private void placeComponents(JPanel panel, JFrame frame) {
         panel.setLayout(null);
 
-        JLabel eventoLabel = new JLabel("Evento");
+        JLabel eventoLabel = new JLabel("Evento:");
         eventoLabel.setBounds(10, 20, 80, 25);
         panel.add(eventoLabel);
 
@@ -44,54 +51,104 @@ public class ReservaController {
         eventoText.setBounds(100, 20, 250, 25);
         panel.add(eventoText);
 
-        JLabel dateTimeLabel = new JLabel("Data e Hora (dd/MM/yyyy HH:mm)");
-        dateTimeLabel.setBounds(10, 50, 250, 25);
-        panel.add(dateTimeLabel);
+        JLabel dateLabel = new JLabel("Data (dd/MM/yyyy):");
+        dateLabel.setBounds(10, 60, 150, 25);
+        panel.add(dateLabel);
 
-        JTextField dateTimeText = new JTextField(20);
-        dateTimeText.setBounds(260, 50, 150, 25);
-        panel.add(dateTimeText);
+        JTextField dateText = new JTextField(10);
+        dateText.setBounds(160, 60, 100, 25);
+        panel.add(dateText);
 
-        JLabel duracaoLabel = new JLabel("Duração (hh:mm)");
-        duracaoLabel.setBounds(10, 80, 100, 25);
+        JLabel timeLabel = new JLabel("Hora (HH:mm):");
+        timeLabel.setBounds(10, 100, 150, 25);
+        panel.add(timeLabel);
+
+        JTextField timeText = new JTextField(10);
+        timeText.setBounds(160, 100, 100, 25);
+        panel.add(timeText);
+
+        JLabel duracaoLabel = new JLabel("Duração (hh:mm):");
+        duracaoLabel.setBounds(10, 140, 150, 25);
         panel.add(duracaoLabel);
 
-        JTextField duracaoText = new JTextField(20);
-        duracaoText.setBounds(100, 80, 100, 25);
+        JTextField duracaoText = new JTextField(10);
+        duracaoText.setBounds(160, 140, 100, 25);
         panel.add(duracaoText);
 
         JButton reservarButton = new JButton("Reservar");
-        reservarButton.setBounds(10, 120, 150, 25);
+        reservarButton.setBounds(10, 180, 150, 25);
         panel.add(reservarButton);
 
         JButton voltarButton = new JButton("Voltar");
-        voltarButton.setBounds(200, 120, 150, 25);
+        voltarButton.setBounds(200, 180, 150, 25);
         panel.add(voltarButton);
 
-        reservarButton.addActionListener((ActionEvent e) -> {
-            try {
-                String evento = eventoText.getText();
-                LocalDateTime dataHoraInicio = LocalDateTime.parse(dateTimeText.getText(), dateTimeFormatter);
-                String duracaoTexto = duracaoText.getText();
-                Duration duracao = Duration.ofHours(Long.parseLong(duracaoTexto.split(":")[0]))
-                                            .plusMinutes(Long.parseLong(duracaoTexto.split(":")[1]));
-                Reserva reserva = new Reserva(evento, dataHoraInicio, duracao, usuario);
-                reservaService.adicionarReserva(reserva);
-                JOptionPane.showMessageDialog(panel, "Reserva realizada com sucesso!");
-                frame.dispose(); // Fechar a tela de reserva
-                new CalendarioController(reservaService).criarInterface(); // Abrir a tela de calendário
-            } catch (DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(panel, "Formato de data e hora inválido. Use o formato 'dd/MM/yyyy HH:mm'.");
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(panel, "Formato de duração inválido. Use o formato 'hh:mm'.");
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(panel, "Erro inesperado: " + ex.getMessage());
+        reservarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String evento = eventoText.getText();
+                    LocalDate data = LocalDate.parse(dateText.getText(), dateFormatter);
+                    LocalTime hora = LocalTime.parse(timeText.getText(), timeFormatter);
+                    String duracaoTexto = duracaoText.getText();
+                    Duration duracao = Duration.ofHours(Long.parseLong(duracaoTexto.split(":")[0]))
+                                                .plusMinutes(Long.parseLong(duracaoTexto.split(":")[1]));
+                    LocalDateTime dataHoraInicio = LocalDateTime.of(data, hora);
+                    Reserva reserva = new Reserva(evento, dataHoraInicio, duracao, usuario);
+                    reservaService.adicionarReserva(reserva);
+                    JOptionPane.showMessageDialog(panel, "Reserva realizada com sucesso!");
+                    frame.dispose();
+                    new CalendarioController(reservaService, frame).criarInterface();
+                } catch (DateTimeParseException ex) {
+                    JOptionPane.showMessageDialog(panel, "Formato de data ou hora inválido. Use os formatos 'dd/MM/yyyy' e 'HH:mm'.");
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(panel, "Formato de duração inválido. Use o formato 'hh:mm'.");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(panel, "Erro inesperado: " + ex.getMessage());
+                }
             }
         });
 
-        voltarButton.addActionListener((ActionEvent e) -> {
-            frame.dispose();
-            new CalendarioController(reservaService).criarInterface(); // Voltar para a tela de calendário
+        voltarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                previousFrame.setVisible(true);
+            }
+        });
+
+        eventoText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dateText.requestFocus();
+            }
+        });
+
+        dateText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String text = dateText.getText();
+                long count = text.chars().filter(ch -> ch == '/').count();
+                if (count < 2 && text.length() > 0 && text.charAt(text.length() - 1) != '/') {
+                    dateText.setText(text + "/");
+                } else {
+                    timeText.requestFocus();
+                }
+            }
+        });
+
+        timeText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                duracaoText.requestFocus();
+            }
+        });
+
+        duracaoText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                reservarButton.doClick();
+            }
         });
     }
 }
