@@ -1,57 +1,52 @@
 package com.example;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
-public class Reserva {
-    private final String evento;
-    private final LocalDateTime dataHoraInicio;
-    private final Duration duracao;
-    private final Usuario usuario;
+public class Reserva implements Serializable {
+    private String evento;
+    private LocalDateTime dataHoraInicio;
+    private Duration duracao;
+    private Usuario usuario;
 
     public Reserva(String evento, LocalDateTime dataHoraInicio, Duration duracao, Usuario usuario) {
-        this.evento = Objects.requireNonNull(evento, "Evento não pode ser nulo");
-        this.dataHoraInicio = Objects.requireNonNull(dataHoraInicio, "Data e hora de início não podem ser nulos");
-        this.duracao = Objects.requireNonNull(duracao, "Duração não pode ser nula");
-        this.usuario = Objects.requireNonNull(usuario, "Usuário não pode ser nulo");
+        this.evento = evento;
+        this.dataHoraInicio = dataHoraInicio;
+        this.duracao = duracao;
+        this.usuario = usuario;
     }
 
+    // Getters e setters
     public String getEvento() {
         return evento;
+    }
+
+    public void setEvento(String evento) {
+        this.evento = evento;
     }
 
     public LocalDateTime getDataHoraInicio() {
         return dataHoraInicio;
     }
 
+    public void setDataHoraInicio(LocalDateTime dataHoraInicio) {
+        this.dataHoraInicio = dataHoraInicio;
+    }
+
     public Duration getDuracao() {
         return duracao;
+    }
+
+    public void setDuracao(Duration duracao) {
+        this.duracao = duracao;
     }
 
     public Usuario getUsuario() {
         return usuario;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Evento: %s, Início: %s, Duração: %s, Usuário: %s",
-                             evento, dataHoraInicio, duracao, usuario.getNome());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Reserva reserva = (Reserva) o;
-        return evento.equals(reserva.evento) &&
-               dataHoraInicio.equals(reserva.dataHoraInicio) &&
-               duracao.equals(reserva.duracao) &&
-               usuario.equals(reserva.usuario);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(evento, dataHoraInicio, duracao, usuario);
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
