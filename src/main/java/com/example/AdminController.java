@@ -1,6 +1,7 @@
 package com.example;
 
 import java.awt.event.ActionEvent;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -8,7 +9,7 @@ import javax.swing.JPanel;
 
 public class AdminController {
     private JFrame frame;
-    private JFrame previousFrame;
+    private final JFrame previousFrame;
 
     public AdminController(JFrame previousFrame) {
         this.previousFrame = previousFrame;

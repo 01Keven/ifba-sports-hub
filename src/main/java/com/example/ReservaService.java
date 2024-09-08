@@ -1,6 +1,11 @@
 package com.example;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +28,10 @@ public class ReservaService {
         StringBuilder relatorio = new StringBuilder("Relatório de Uso:\n");
         for (Reserva reserva : reservas) {
             relatorio.append("Evento: ").append(reserva.getEvento())
-                     .append(", Data e Hora: ").append(reserva.getDataHoraInicio())
-                     .append(", Duração: ").append(reserva.getDuracao().toHours()).append(" horas e ")
+                     .append(" | Data e Hora: ").append(reserva.getDataHoraInicio())
+                     .append(" | Duração: ").append(reserva.getDuracao().toHours()).append(" horas e ")
                      .append(reserva.getDuracao().toMinutesPart()).append(" minutos")
-                     .append(", Usuário: ").append(reserva.getUsuario().getNome()).append("\n");
+                     .append(" | Usuário: ").append(reserva.getUsuario().getNome()).append("\n");
         }
         return relatorio.toString();
     }
@@ -43,10 +48,10 @@ public class ReservaService {
         StringBuilder relatorio = new StringBuilder("Reservas do dia " + data.toString() + ":\n");
         for (Reserva reserva : reservasDoDia) {
             relatorio.append("Evento: ").append(reserva.getEvento())
-                     .append(", Data e Hora: ").append(reserva.getDataHoraInicio())
-                     .append(", Duração: ").append(reserva.getDuracao().toHours()).append(" horas e ")
+                     .append(" | Data e Hora: ").append(reserva.getDataHoraInicio())
+                     .append(" | Duração: ").append(reserva.getDuracao().toHours()).append(" horas e ")
                      .append(reserva.getDuracao().toMinutesPart()).append(" minutos")
-                     .append(", Usuário: ").append(reserva.getUsuario().getNome()).append("\n");
+                     .append(" | Usuário: ").append(reserva.getUsuario().getNome()).append("\n");
         }
         return relatorio.toString();
     }
