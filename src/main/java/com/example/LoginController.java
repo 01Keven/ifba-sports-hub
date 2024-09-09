@@ -1,14 +1,9 @@
 package com.example;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class LoginController {
     private final UsuarioService usuarioService;
@@ -23,7 +18,8 @@ public class LoginController {
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        JPanel panel = new JPanel();
+        frame.setIconImage(new ImageIcon("path/to/icon.png").getImage()); // Adicionar ícone
+        JPanel panel = new JPanel(new GridBagLayout());
         frame.add(panel);
         placeComponents(panel);
         frame.setLocationRelativeTo(null);
@@ -31,31 +27,37 @@ public class LoginController {
     }
 
     private void placeComponents(JPanel panel) {
-        panel.setLayout(null);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
-        JLabel userLabel = new JLabel("Usuário");
-        userLabel.setBounds(10, 20, 80, 25);
-        panel.add(userLabel);
+        JLabel userLabel = new JLabel("Usuário:");
+        panel.add(userLabel, gbc);
 
+        gbc.gridx = 1;
         JTextField userText = new JTextField(20);
-        userText.setBounds(100, 20, 250, 25);
-        panel.add(userText);
+        panel.add(userText, gbc);
 
-        JLabel passwordLabel = new JLabel("Senha");
-        passwordLabel.setBounds(10, 60, 80, 25);
-        panel.add(passwordLabel);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        JLabel passwordLabel = new JLabel("Senha:");
+        panel.add(passwordLabel, gbc);
 
+        gbc.gridx = 1;
         JPasswordField passwordText = new JPasswordField(20);
-        passwordText.setBounds(100, 60, 250, 25);
-        panel.add(passwordText);
+        panel.add(passwordText, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
         JButton loginButton = new JButton("Login");
-        loginButton.setBounds(10, 100, 150, 25);
-        panel.add(loginButton);
+        loginButton.setToolTipText("Clique para fazer login");
+        panel.add(loginButton, gbc);
 
+        gbc.gridx = 1;
         JButton registerButton = new JButton("Registrar");
-        registerButton.setBounds(200, 100, 150, 25);
-        panel.add(registerButton);
+        registerButton.setToolTipText("Clique para registrar um novo usuário");
+        panel.add(registerButton, gbc);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -64,14 +66,11 @@ public class LoginController {
                 String senha = new String(passwordText.getPassword());
                 Usuario usuario = usuarioService.autenticarUsuario(nomeUsuario, senha);
                 if (usuario != null) {
+                    JOptionPane.showMessageDialog(panel, "Login bem-sucedido!");
                     frame.dispose();
-                    if (usuario.getTipo().equals("administrador")) {
-                        new AdminController(frame).criarInterface();
-                    } else {
-                        new UsuarioController(usuario, frame).criarInterface();
-                    }
+                    new UsuarioController(usuario, frame).criarInterface();
                 } else {
-                    JOptionPane.showMessageDialog(panel, "Usuário ou senha inválidos!");
+                    JOptionPane.showMessageDialog(panel, "Nome de usuário ou senha incorretos.");
                 }
             }
         });
@@ -97,5 +96,15 @@ public class LoginController {
                 loginButton.doClick();
             }
         });
+    }
+
+    public static void main(String[] args) {
+        // Aplicar tema
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        new LoginController(new UsuarioService()).criarInterface();
     }
 }

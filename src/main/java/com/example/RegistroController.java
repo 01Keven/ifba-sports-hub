@@ -1,14 +1,9 @@
 package com.example;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class RegistroController {
     private final UsuarioService usuarioService;
@@ -25,7 +20,8 @@ public class RegistroController {
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        JPanel panel = new JPanel();
+        frame.setIconImage(new ImageIcon("path/to/icon.png").getImage()); // Adicionar ícone
+        JPanel panel = new JPanel(new GridBagLayout());
         frame.add(panel);
         placeComponents(panel);
         frame.setLocationRelativeTo(null);
@@ -33,31 +29,37 @@ public class RegistroController {
     }
 
     private void placeComponents(JPanel panel) {
-        panel.setLayout(null);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
-        JLabel userLabel = new JLabel("Usuário");
-        userLabel.setBounds(10, 20, 80, 25);
-        panel.add(userLabel);
+        JLabel userLabel = new JLabel("Usuário:");
+        panel.add(userLabel, gbc);
 
+        gbc.gridx = 1;
         JTextField userText = new JTextField(20);
-        userText.setBounds(100, 20, 250, 25);
-        panel.add(userText);
+        panel.add(userText, gbc);
 
-        JLabel passwordLabel = new JLabel("Senha");
-        passwordLabel.setBounds(10, 60, 80, 25);
-        panel.add(passwordLabel);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        JLabel passwordLabel = new JLabel("Senha:");
+        panel.add(passwordLabel, gbc);
 
+        gbc.gridx = 1;
         JPasswordField passwordText = new JPasswordField(20);
-        passwordText.setBounds(100, 60, 250, 25);
-        panel.add(passwordText);
+        panel.add(passwordText, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
         JButton registerButton = new JButton("Registrar");
-        registerButton.setBounds(10, 100, 150, 25);
-        panel.add(registerButton);
+        registerButton.setToolTipText("Clique para registrar um novo usuário");
+        panel.add(registerButton, gbc);
 
+        gbc.gridx = 1;
         JButton loginButton = new JButton("Voltar para Login");
-        loginButton.setBounds(200, 100, 150, 25);
-        panel.add(loginButton);
+        loginButton.setToolTipText("Clique para voltar à tela de login");
+        panel.add(loginButton, gbc);
 
         registerButton.addActionListener(new ActionListener() {
             @Override
@@ -93,5 +95,15 @@ public class RegistroController {
                 registerButton.doClick();
             }
         });
+    }
+
+    public static void main(String[] args) {
+        // Aplicar tema
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        new RegistroController(new UsuarioService(), null).criarInterface();
     }
 }

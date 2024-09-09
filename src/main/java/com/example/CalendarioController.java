@@ -1,14 +1,9 @@
 package com.example;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
+import javax.swing.*;
 import com.toedter.calendar.JCalendar;
 
 public class CalendarioController {
@@ -25,13 +20,15 @@ public class CalendarioController {
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        frame.setIconImage(new ImageIcon("path/to/icon.png").getImage()); // Adicionar ícone
+        JPanel panel = new JPanel(new BorderLayout());
+        frame.add(panel);
 
         JCalendar calendar = new JCalendar();
         panel.add(calendar, BorderLayout.CENTER);
 
         JButton verReservasButton = new JButton("Ver Reservas");
+        verReservasButton.setToolTipText("Clique para ver as reservas do dia selecionado");
         panel.add(verReservasButton, BorderLayout.SOUTH);
 
         verReservasButton.addActionListener((ActionEvent e) -> {
@@ -41,6 +38,7 @@ public class CalendarioController {
         });
 
         JButton voltarButton = new JButton("Voltar");
+        voltarButton.setToolTipText("Clique para voltar à tela anterior");
         panel.add(voltarButton, BorderLayout.NORTH);
 
         voltarButton.addActionListener((ActionEvent e) -> {
@@ -48,8 +46,17 @@ public class CalendarioController {
             previousFrame.setVisible(true);
         });
 
-        frame.add(panel);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        // Aplicar tema
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        new CalendarioController(new ReservaService(), null).criarInterface();
     }
 }
