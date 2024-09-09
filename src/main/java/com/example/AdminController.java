@@ -1,8 +1,15 @@
 package com.example;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import javax.swing.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 public class AdminController {
     private JFrame frame;
@@ -35,7 +42,7 @@ public class AdminController {
         gerarRelatorioButton.setToolTipText("Clique para gerar um relatório de uso");
         panel.add(gerarRelatorioButton, gbc);
 
-        gerarRelatorioButton.addActionListener((ActionEvent e) -> {
+        gerarRelatorioButton.addActionListener(e -> {
             ReservaService reservaService = new ReservaService();
             String relatorio = reservaService.gerarRelatorioDeUso();
             JOptionPane.showMessageDialog(panel, relatorio);
@@ -46,7 +53,7 @@ public class AdminController {
         logoutButton.setToolTipText("Clique para sair do sistema");
         panel.add(logoutButton, gbc);
 
-        logoutButton.addActionListener((ActionEvent e) -> {
+        logoutButton.addActionListener(e -> {
             frame.dispose();
             new LoginController(new UsuarioService()).criarInterface();
         });
@@ -56,9 +63,11 @@ public class AdminController {
         voltarButton.setToolTipText("Clique para voltar à tela anterior");
         panel.add(voltarButton, gbc);
 
-        voltarButton.addActionListener((ActionEvent e) -> {
+        voltarButton.addActionListener(e -> {
             frame.dispose();
-            previousFrame.setVisible(true);
+            if (previousFrame != null) {
+                previousFrame.setVisible(true);
+            }
         });
     }
 

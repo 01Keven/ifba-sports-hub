@@ -18,7 +18,10 @@ public class LoginController {
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        frame.setIconImage(new ImageIcon("path/to/icon.png").getImage()); // Adicionar ícone
+
+        // Definir o ícone da janela
+        frame.setIconImage(new ImageIcon(getClass().getResource("/icons/favicon.png")).getImage());
+
         JPanel panel = new JPanel(new GridBagLayout());
         frame.add(panel);
         placeComponents(panel);
@@ -96,15 +99,5 @@ public class LoginController {
                 loginButton.doClick();
             }
         });
-    }
-
-    public static void main(String[] args) {
-        // Aplicar tema
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        new LoginController(new UsuarioService()).criarInterface();
     }
 }
