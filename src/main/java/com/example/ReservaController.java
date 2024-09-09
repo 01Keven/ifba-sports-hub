@@ -1,5 +1,6 @@
 package com.example;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.Duration;
@@ -8,12 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class ReservaController {
     private final ReservaService reservaService;
@@ -33,7 +29,8 @@ public class ReservaController {
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        JPanel panel = new JPanel();
+        frame.setIconImage(new ImageIcon("path/to/icon.png").getImage()); // Adicionar ícone
+        JPanel panel = new JPanel(new GridBagLayout());
         frame.add(panel);
         placeComponents(panel, frame);
         frame.setLocationRelativeTo(null);
@@ -41,47 +38,55 @@ public class ReservaController {
     }
 
     private void placeComponents(JPanel panel, JFrame frame) {
-        panel.setLayout(null);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
         JLabel eventoLabel = new JLabel("Evento:");
-        eventoLabel.setBounds(10, 20, 80, 25);
-        panel.add(eventoLabel);
+        panel.add(eventoLabel, gbc);
 
+        gbc.gridx = 1;
         JTextField eventoText = new JTextField(20);
-        eventoText.setBounds(100, 20, 250, 25);
-        panel.add(eventoText);
+        panel.add(eventoText, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
         JLabel dateLabel = new JLabel("Data (dd/MM/yyyy):");
-        dateLabel.setBounds(10, 60, 150, 25);
-        panel.add(dateLabel);
+        panel.add(dateLabel, gbc);
 
+        gbc.gridx = 1;
         JTextField dateText = new JTextField(10);
-        dateText.setBounds(160, 60, 100, 25);
-        panel.add(dateText);
+        panel.add(dateText, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
         JLabel timeLabel = new JLabel("Hora (HH:mm):");
-        timeLabel.setBounds(10, 100, 150, 25);
-        panel.add(timeLabel);
+        panel.add(timeLabel, gbc);
 
+        gbc.gridx = 1;
         JTextField timeText = new JTextField(10);
-        timeText.setBounds(160, 100, 100, 25);
-        panel.add(timeText);
+        panel.add(timeText, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
         JLabel duracaoLabel = new JLabel("Duração (hh:mm):");
-        duracaoLabel.setBounds(10, 140, 150, 25);
-        panel.add(duracaoLabel);
+        panel.add(duracaoLabel, gbc);
 
+        gbc.gridx = 1;
         JTextField duracaoText = new JTextField(10);
-        duracaoText.setBounds(160, 140, 100, 25);
-        panel.add(duracaoText);
+        panel.add(duracaoText, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
         JButton reservarButton = new JButton("Reservar");
-        reservarButton.setBounds(10, 180, 150, 25);
-        panel.add(reservarButton);
+        reservarButton.setToolTipText("Clique para reservar um horário");
+        panel.add(reservarButton, gbc);
 
+        gbc.gridx = 1;
         JButton voltarButton = new JButton("Voltar");
-        voltarButton.setBounds(200, 180, 150, 25);
-        panel.add(voltarButton);
+        voltarButton.setToolTipText("Clique para voltar à tela anterior");
+        panel.add(voltarButton, gbc);
 
         reservarButton.addActionListener(new ActionListener() {
             @Override
@@ -140,15 +145,37 @@ public class ReservaController {
         timeText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                duracaoText.requestFocus();
+                String text = timeText.getText();
+                long count = text.chars().filter(ch -> ch == ':').count();
+                if (count < 1 && text.length() > 0 && text.charAt(text.length() - 1) != ':') {
+                    timeText.setText(text + ":");
+                } else {
+                    duracaoText.requestFocus();
+                }
             }
         });
 
         duracaoText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                reservarButton.doClick();
+                String text = duracaoText.getText();
+                long count = text.chars().filter(ch -> ch == ':').count();
+                if (count < 1 && text.length() > 0 && text.charAt(text.length() - 1) != ':') {
+                    duracaoText.setText(text + ":");
+                } else {
+                    reservarButton.doClick();
+                }
             }
         });
+    }
+
+    public static void main(String[] args) {
+        // Aplicar tema
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        new ReservaController(new ReservaService(), new Usuario(), null).criarInterface();
     }
 }

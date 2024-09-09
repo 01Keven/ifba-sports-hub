@@ -1,15 +1,12 @@
 package com.example;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class AdminController {
     private JFrame frame;
-    private final JFrame previousFrame;
+    private JFrame previousFrame;
 
     public AdminController(JFrame previousFrame) {
         this.previousFrame = previousFrame;
@@ -20,7 +17,8 @@ public class AdminController {
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        JPanel panel = new JPanel();
+        frame.setIconImage(new ImageIcon("path/to/icon.png").getImage()); // Adicionar ícone
+        JPanel panel = new JPanel(new GridBagLayout());
         frame.add(panel);
         placeComponents(panel);
         frame.setLocationRelativeTo(null);
@@ -28,11 +26,14 @@ public class AdminController {
     }
 
     private void placeComponents(JPanel panel) {
-        panel.setLayout(null);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
         JButton gerarRelatorioButton = new JButton("Gerar Relatório");
-        gerarRelatorioButton.setBounds(10, 20, 150, 25);
-        panel.add(gerarRelatorioButton);
+        gerarRelatorioButton.setToolTipText("Clique para gerar um relatório de uso");
+        panel.add(gerarRelatorioButton, gbc);
 
         gerarRelatorioButton.addActionListener((ActionEvent e) -> {
             ReservaService reservaService = new ReservaService();
@@ -40,22 +41,34 @@ public class AdminController {
             JOptionPane.showMessageDialog(panel, relatorio);
         });
 
+        gbc.gridy++;
         JButton logoutButton = new JButton("Sair");
-        logoutButton.setBounds(10, 60, 150, 25);
-        panel.add(logoutButton);
+        logoutButton.setToolTipText("Clique para sair do sistema");
+        panel.add(logoutButton, gbc);
 
         logoutButton.addActionListener((ActionEvent e) -> {
             frame.dispose();
             new LoginController(new UsuarioService()).criarInterface();
         });
 
+        gbc.gridy++;
         JButton voltarButton = new JButton("Voltar");
-        voltarButton.setBounds(10, 100, 150, 25);
-        panel.add(voltarButton);
+        voltarButton.setToolTipText("Clique para voltar à tela anterior");
+        panel.add(voltarButton, gbc);
 
         voltarButton.addActionListener((ActionEvent e) -> {
             frame.dispose();
             previousFrame.setVisible(true);
         });
+    }
+
+    public static void main(String[] args) {
+        // Aplicar tema
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        new AdminController(null).criarInterface();
     }
 }

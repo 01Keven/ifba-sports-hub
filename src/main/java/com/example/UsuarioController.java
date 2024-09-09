@@ -1,10 +1,8 @@
 package com.example;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class UsuarioController {
     private final Usuario usuario;
@@ -21,7 +19,8 @@ public class UsuarioController {
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        JPanel panel = new JPanel();
+        frame.setIconImage(new ImageIcon("path/to/icon.png").getImage()); // Adicionar ícone
+        JPanel panel = new JPanel(new GridBagLayout());
         frame.add(panel);
         placeComponents(panel);
         frame.setLocationRelativeTo(null);
@@ -29,54 +28,59 @@ public class UsuarioController {
     }
 
     private void placeComponents(JPanel panel) {
-        panel.setLayout(null);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
         JButton reservarButton = new JButton("Reservar Horário");
-        reservarButton.setBounds(10, 20, 150, 25);
-        panel.add(reservarButton);
+        reservarButton.setToolTipText("Clique para reservar um horário");
+        panel.add(reservarButton, gbc);
 
-        reservarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                new ReservaController(new ReservaService(), usuario, frame).criarInterface();
-            }
+        reservarButton.addActionListener((ActionEvent e) -> {
+            frame.dispose();
+            new ReservaController(new ReservaService(), usuario, frame).criarInterface();
         });
 
+        gbc.gridy++;
         JButton visualizarButton = new JButton("Ver Reservas");
-        visualizarButton.setBounds(10, 60, 150, 25);
-        panel.add(visualizarButton);
+        visualizarButton.setToolTipText("Clique para ver suas reservas");
+        panel.add(visualizarButton, gbc);
 
-        visualizarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                new CalendarioController(new ReservaService(), frame).criarInterface();
-            }
+        visualizarButton.addActionListener((ActionEvent e) -> {
+            frame.dispose();
+            new CalendarioController(new ReservaService(), frame).criarInterface();
         });
 
-        JButton logoutButton = new JButton("Sair");
-        logoutButton.setBounds(10, 100, 150, 25);
-        panel.add(logoutButton);
-
-        logoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                new LoginController(new UsuarioService()).criarInterface();
-            }
-        });
-
+        // Alterar a ordem dos botões "Sair" e "Voltar"
+        gbc.gridy++;
         JButton voltarButton = new JButton("Voltar");
-        voltarButton.setBounds(10, 140, 150, 25);
-        panel.add(voltarButton);
+        voltarButton.setToolTipText("Clique para voltar à tela anterior");
+        panel.add(voltarButton, gbc);
 
-        voltarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                previousFrame.setVisible(true);
-            }
+        voltarButton.addActionListener((ActionEvent e) -> {
+            frame.dispose();
+            previousFrame.setVisible(true);
         });
+
+        gbc.gridy++;
+        JButton logoutButton = new JButton("Sair");
+        logoutButton.setToolTipText("Clique para sair do sistema");
+        panel.add(logoutButton, gbc);
+
+        logoutButton.addActionListener((ActionEvent e) -> {
+            frame.dispose();
+            new LoginController(new UsuarioService()).criarInterface();
+        });
+    }
+
+    public static void main(String[] args) {
+        // Aplicar tema
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        new UsuarioController(new Usuario(), null).criarInterface();
     }
 }
