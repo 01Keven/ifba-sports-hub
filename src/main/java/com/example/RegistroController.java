@@ -17,9 +17,9 @@ public class RegistroController {
 
     public void criarInterface() {
         frame = new JFrame("Registro de Usuário");
-        frame.setSize(400, 300);
+        frame.setSize(800, 600); // Tamanho padrão da janela
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
+        frame.setResizable(true); // Permitir redimensionamento
         frame.setIconImage(new ImageIcon("path/to/icon.png").getImage()); // Adicionar ícone
         JPanel panel = new JPanel(new GridBagLayout());
         frame.add(panel);
@@ -40,6 +40,15 @@ public class RegistroController {
         gbc.gridx = 1;
         JTextField userText = new JTextField(20);
         panel.add(userText, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        JLabel emailLabel = new JLabel("Email:");
+        panel.add(emailLabel, gbc);
+
+        gbc.gridx = 1;
+        JTextField emailText = new JTextField(20);
+        panel.add(emailText, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -64,9 +73,17 @@ public class RegistroController {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nomeUsuario = userText.getText();
-                String senha = new String(passwordText.getPassword());
+                String nomeUsuario = userText.getText().trim();
+                String email = emailText.getText().trim();
+                String senha = new String(passwordText.getPassword()).trim();
+                
+                if (nomeUsuario.isEmpty() || email.isEmpty() || senha.isEmpty()) {
+                    JOptionPane.showMessageDialog(panel, "Nome de usuário, email e senha não podem estar vazios.");
+                    return;
+                }
+
                 Usuario usuario = new Usuario(nomeUsuario, senha, "aluno");
+                usuario.setEmail(email);
                 usuarioService.cadastrarUsuario(usuario);
                 JOptionPane.showMessageDialog(panel, "Usuário registrado com sucesso!");
                 frame.dispose();
@@ -83,6 +100,13 @@ public class RegistroController {
         });
 
         userText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                emailText.requestFocus();
+            }
+        });
+
+        emailText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 passwordText.requestFocus();

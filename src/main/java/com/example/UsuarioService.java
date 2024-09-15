@@ -12,10 +12,11 @@ public class UsuarioService {
         carregarUsuarios();
     }
 
-    public Usuario autenticarUsuario(String nomeUsuario, String senha) {
-        Usuario usuario = usuarios.get(nomeUsuario);
-        if (usuario != null && usuario.getSenha().equals(senha)) {
-            return usuario;
+    public Usuario autenticarUsuario(String identificador, String senha) {
+        for (Usuario usuario : usuarios.values()) {
+            if ((usuario.getNome().equals(identificador) || usuario.getEmail().equals(identificador)) && usuario.getSenha().equals(senha)) {
+                return usuario;
+            }
         }
         return null;
     }

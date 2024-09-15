@@ -15,9 +15,9 @@ public class LoginController {
 
     public void criarInterface() {
         frame = new JFrame("Login");
-        frame.setSize(400, 300);
+        frame.setSize(800, 600); // Tamanho padrão da janela
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
+        frame.setResizable(true); // Permitir redimensionamento
 
         // Definir o ícone da janela
         frame.setIconImage(new ImageIcon(getClass().getResource("/icons/favicon.png")).getImage());
@@ -35,12 +35,12 @@ public class LoginController {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        JLabel userLabel = new JLabel("Usuário:");
-        panel.add(userLabel, gbc);
+        JLabel identifierLabel = new JLabel("Usuário ou Email:");
+        panel.add(identifierLabel, gbc);
 
         gbc.gridx = 1;
-        JTextField userText = new JTextField(20);
-        panel.add(userText, gbc);
+        JTextField identifierText = new JTextField(20);
+        panel.add(identifierText, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -65,15 +65,21 @@ public class LoginController {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nomeUsuario = userText.getText();
-                String senha = new String(passwordText.getPassword());
-                Usuario usuario = usuarioService.autenticarUsuario(nomeUsuario, senha);
+                String identificador = identifierText.getText().trim();
+                String senha = new String(passwordText.getPassword()).trim();
+                
+                if (identificador.isEmpty() || senha.isEmpty()) {
+                    JOptionPane.showMessageDialog(panel, "Usuário/Email e senha não podem estar vazios.");
+                    return;
+                }
+
+                Usuario usuario = usuarioService.autenticarUsuario(identificador, senha);
                 if (usuario != null) {
                     JOptionPane.showMessageDialog(panel, "Login bem-sucedido!");
                     frame.dispose();
                     new UsuarioController(usuario, frame).criarInterface();
                 } else {
-                    JOptionPane.showMessageDialog(panel, "Nome de usuário ou senha incorretos.");
+                    JOptionPane.showMessageDialog(panel, "Usuário/Email ou senha incorretos.");
                 }
             }
         });
@@ -86,7 +92,7 @@ public class LoginController {
             }
         });
 
-        userText.addActionListener(new ActionListener() {
+        identifierText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 passwordText.requestFocus();

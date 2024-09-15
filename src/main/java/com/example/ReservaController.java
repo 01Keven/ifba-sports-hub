@@ -26,9 +26,9 @@ public class ReservaController {
 
     public void criarInterface() {
         JFrame frame = new JFrame("Reserva de Horário");
-        frame.setSize(400, 300);
+        frame.setSize(800, 600); // Tamanho padrão da janela
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
+        frame.setResizable(true); // Permitir redimensionamento
         frame.setIconImage(new ImageIcon("path/to/icon.png").getImage()); // Adicionar ícone
         JPanel panel = new JPanel(new GridBagLayout());
         frame.add(panel);
@@ -92,10 +92,18 @@ public class ReservaController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String evento = eventoText.getText();
-                    LocalDate data = LocalDate.parse(dateText.getText(), dateFormatter);
-                    LocalTime hora = LocalTime.parse(timeText.getText(), timeFormatter);
-                    String duracaoTexto = duracaoText.getText();
+                    String evento = eventoText.getText().trim();
+                    String dataTexto = dateText.getText().trim();
+                    String horaTexto = timeText.getText().trim();
+                    String duracaoTexto = duracaoText.getText().trim();
+                    
+                    if (evento.isEmpty() || dataTexto.isEmpty() || horaTexto.isEmpty() || duracaoTexto.isEmpty()) {
+                        JOptionPane.showMessageDialog(panel, "Todos os campos devem ser preenchidos.");
+                        return;
+                    }
+
+                    LocalDate data = LocalDate.parse(dataTexto, dateFormatter);
+                    LocalTime hora = LocalTime.parse(horaTexto, timeFormatter);
                     Duration duracao = Duration.ofHours(Long.parseLong(duracaoTexto.split(":")[0]))
                                                 .plusMinutes(Long.parseLong(duracaoTexto.split(":")[1]));
                     LocalDateTime dataHoraInicio = LocalDateTime.of(data, hora);
